@@ -1,0 +1,1 @@
+watchrun go test -v .

@@ -1,22 +1,17 @@
 package main
-
+  Rock Paper Scissors ---
 import "testing"
 
 var (
 	test = []string{
-		"vJrwpWtwJgWrhcsFMMfFFhFp",
-		"jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
-		"PmmdzqPrVvPwwTWBwg",
-		"wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
-		"ttgJtRGJQctTZtZT",
-		"CrZsJsPPZsGzwwsLwLmpwMDw",
+		"",
 	}
 )
 
 func TestSol1(t *testing.T) {
 	ans := sol1(test)
-	if ans != 157 {
-		t.Errorf("Sol1_1 =%d ;want 157", ans)
+	if ans != -1 {
+		t.Errorf("Sol1_1 =%d ;want XXX", ans)
 	}
 }
 
@@ -28,8 +23,8 @@ func BenchmarkSol1(b *testing.B) {
 
 func TestSol2(t *testing.T) {
 	ans := sol2(test)
-	if ans != 70 {
-		t.Errorf("Sol1_1 =%d ;want 70", ans)
+	if ans != -1 {
+		t.Errorf("Sol1_1 =%d ;want XXX", ans)
 	}
 }
 

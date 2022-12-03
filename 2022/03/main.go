@@ -1,5 +1,5 @@
-// Package main https://adventofcode.com/2022/day/2
-// --- Day 2: Rock Paper Scissors ---
+// Package main https://adventofcode.com/2022/day/3
+// --- Day 3:
 package main
 
 import (

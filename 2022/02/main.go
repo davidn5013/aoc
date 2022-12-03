@@ -32,6 +32,12 @@ func main() {
 		"C Z",
 	}))
 	fmt.Printf("Solution 1 ver 2 %d\n", sol1_2(input))
+	fmt.Printf("Solution 1 ver 3 %d\n", sol1_3([]string{
+		"A Y",
+		"B X",
+		"C Z",
+	}))
+	fmt.Printf("Solution 1 ver 3 %d\n", sol1_3(input))
 	fmt.Printf("Solution 2 %d\n", sol2([]string{
 		"A Y",
 		"B X",

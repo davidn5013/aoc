@@ -1,5 +1,5 @@
-# 
+# Advent of code
 
-## Usage
+Golang 
 
 / David

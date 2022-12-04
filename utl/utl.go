@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 )
 
 // Helper functions
@@ -33,4 +34,17 @@ func CurrFuncName() string {
 	}
 
 	return runtime.FuncForPC(counter).Name()
+}
+
+// SetTimer Set a timmer and return a func
+// that returns time.Duration from the timer
+// func main() {
+// stopTimer := SetTimer()
+// ...
+// fmt.Printf("Elapsed time:%v\n".stopTimer())
+func SetTimer() func() time.Duration {
+	t := time.Now()
+	return func() time.Duration {
+		return time.Since(t)
+	}
 }

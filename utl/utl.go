@@ -16,8 +16,11 @@ func Debug(b bool, format string, v ...any) {
 }
 
 // PanicIf short for if b {panic()} don't for get to change the func name to most
-func PanicIf(b bool, s string) {
-	panic(s)
+func PanicIf(b bool, format string, v ...any) {
+	if b {
+		fmt.Printf("PANIC : "+format, v...)
+		panic("Using PanicIf()")
+	}
 }
 
 // CurrFuncName print out func for use int fmt.Printf and debug texts

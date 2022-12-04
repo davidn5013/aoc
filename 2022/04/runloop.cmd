@@ -1,2 +1,2 @@
 @cls
-@watchrun -monitor main.go make run
+@watchrun -monitor main.go go run .

@@ -1,5 +1,5 @@
 package main
-  Rock Paper Scissors ---
+
 import "testing"
 
 var (
@@ -15,16 +15,16 @@ func TestSol1(t *testing.T) {
 	}
 }
 
-func BenchmarkSol1(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		sol1(test)
-	}
-}
-
 func TestSol2(t *testing.T) {
 	ans := sol2(test)
 	if ans != -1 {
 		t.Errorf("Sol1_1 =%d ;want XXX", ans)
+	}
+}
+
+func BenchmarkSol1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		sol1(test)
 	}
 }
 

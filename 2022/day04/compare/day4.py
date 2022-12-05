@@ -1,5 +1,7 @@
+# https://github.com/womogenes/AoC-2022-Solutions/blob/main/day_04/day_04_p2.py
 from functools import wraps
 import time
+import os.path
 
 def timeit(func):
     """Decorator to calculate time taken by a function to run"""
@@ -23,7 +25,7 @@ def timeit(func):
 
 @timeit
 def part1():
-    with open("input.txt") as fin:
+    with open(".\input.txt") as fin:
         lines = fin.read().strip().split()
 
     ans = 0

@@ -2,34 +2,28 @@ package main
 
 import "testing"
 
-var (
-	test = []string{
-		"",
-	}
-)
-
 func TestSol1(t *testing.T) {
-	ans := sol1(test)
-	if ans != -1 {
-		t.Errorf("Sol1_1 =%d ;want XXX", ans)
+	ans := sol1("input_test.txt", 3)
+	if ans != "CMZ" {
+		t.Errorf("Sol1_1 =%s ;want MCD", ans)
 	}
 }
 
 func BenchmarkSol1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		sol1(test)
+		sol1("input_test.txt", 3)
 	}
 }
 
 func TestSol2(t *testing.T) {
-	ans := sol2(test)
-	if ans != -1 {
-		t.Errorf("Sol1_1 =%d ;want XXX", ans)
+	ans := sol2("input_test.txt", 3)
+	if ans != "MCD" {
+		t.Errorf("Sol1_1 =%s ;want MCD", ans)
 	}
 }
 
 func BenchmarkSol2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		sol2(test)
+		sol2("input_test.txt", 3)
 	}
 }

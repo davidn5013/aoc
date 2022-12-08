@@ -1,0 +1,2 @@
+@cls
+@watchrun make run

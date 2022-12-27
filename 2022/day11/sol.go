@@ -1,3 +1,4 @@
+// Sol 2 day 11
 package main
 
 import (
@@ -11,51 +12,62 @@ import (
 	"github.com/davidn5013/aoc/utl"
 )
 
-// Aoc is a place for the main datastruct in this solution
-type Aoc struct {
-	monkeys []monkey
-	round   int
+// aoc is a place for the main datastruct in this solution
+type aoc struct {
+	monkeylist []monkey // monkeys array
+	// solution variables
+	round        int // number of rounds}
+	bigLimitSol2 int
 }
 
-type monkey struct {
-	monkeyId   int
-	itemWValue []int
-	operType   rune
-	operValue  string
-	testValue  int
-	toMonkey   []int
-}
-
-// NewAoc Aoc struct for cpu information
-func NewAoc() *Aoc {
-	a := Aoc{}
+// newAoc Aoc struct for cpu information
+func newAoc() *aoc {
+	a := aoc{}
 	return &a
 }
 
-func (a Aoc) String() (ret string) {
-	ret = fmt.Sprintf("After round %d, the monkeys are holdning items with worry levels:\n", a.round)
-	for idx, monkey := range a.monkeys {
-		s := ""
-		for _, itemV := range monkey.itemWValue {
-			t := strconv.Itoa(itemV)
-			s += t + ", "
+type monkey struct { // Monkey
+	items []int               // worry value for every item that the monkey have
+	op    func(int, bool) int // func for changing value of items for this monkey
+	throw func(int) int       // func for throw to a new monkey for this monkey
+}
+
+func (m *monkey) newOp(operator rune, value int) func(int, bool) int {
+	operation := func(n int, sol2 bool) int {
+		var valueToUse int = value
+		if valueToUse == 0 {
+			valueToUse = n
 		}
-		ret += fmt.Sprintf("Monkey %d: %s\n", idx, s)
+		if operator == '+' {
+			if sol2 == true {
+				return (n + valueToUse)
+			} else {
+				return (n + valueToUse) / 3
+			}
+		}
+		if sol2 == true {
+			return (n * valueToUse)
+		} else {
+			return (n * valueToUse) / 3
+		}
 	}
-	return ret
+	return operation
 }
 
-func (m monkey) String() (ret string) {
-	ret = fmt.Sprintf("Monkey %d:\n", m.monkeyId)
-	ret += fmt.Sprintf("  Starting items: %v\n", m.itemWValue)
-	ret += fmt.Sprintf("  Operation codes: %c %s\n", m.operType, m.operValue)
-	ret += fmt.Sprintf("  Test codes: %d\n", m.testValue)
-	ret += fmt.Sprintf("  throw list: %v\n", m.toMonkey)
-	return ret
+func (m *monkey) newThrow(testingValue, toThrowIfTrue, toThrowIfFalse int) func(int) int {
+
+	testAndThrow := func(n int) int {
+		if n%testingValue == 0 {
+			return toThrowIfTrue
+		}
+		return toThrowIfFalse
+	}
+	return testAndThrow
 }
 
-func (a *Aoc) parse(filename string) {
+func (a *aoc) parse(filename string) {
 	startmsg(utl.CurrFuncName())
+	a.bigLimitSol2 = 1
 
 	fp, err := os.Open(filename)
 	if err != nil {
@@ -70,131 +82,126 @@ func (a *Aoc) parse(filename string) {
 	sc := bufio.NewScanner(fp)
 
 	for sc.Scan() {
-		// monkeys id
+		var id int
+		// monkeys id is set in array index Aoc.m
 		m := monkey{}
-		fmt.Sscanf(sc.Text(), "Monkey %d:\n", &m.monkeyId)
 
 		// items
 		sc.Scan()
 		for _, item := range strings.Split(sc.Text()[len("  Starting items:"):], ", ") {
-			i, err := strconv.Atoi(strings.TrimSpace(item))
-			if err != nil {
-				log.Fatal("Failed to convert items wores values")
-			}
-			m.itemWValue = append(m.itemWValue, i)
+			i, _ := strconv.Atoi(strings.TrimSpace(item))
+			m.items = append(m.items, i)
+			utl.Debug(debuglvl >= 10, "Monkey id %d new item %d\n", id, i)
 		}
 
 		// Operation
 		sc.Scan()
-		_, err := fmt.Sscanf(sc.Text(), "  Operation: new = old %c %s", &m.operType, &m.operValue)
-		if err != nil {
-			log.Fatal("Failed to read operation")
+		var op rune
+		var opValue int
+		if strings.Contains(sc.Text(), "old * old") || strings.Contains(sc.Text(), "old + old") {
+			fmt.Sscanf(sc.Text(), "  Operation: new = old %c old", &op)
+		} else {
+			fmt.Sscanf(sc.Text(), "  Operation: new = old %c %d", &op, &opValue)
 		}
+		m.op = m.newOp(op, opValue)
+		utl.Debug(debuglvl >= 10, "Monkey id %d op %c %d\n", id, op, opValue)
 
-		// Test
+		// Test and throw
 		sc.Scan()
-		_, err = fmt.Sscanf(sc.Text(), "  Test: divisible by %d", &m.testValue)
-		if err != nil {
-			log.Fatal("Failed to read test div")
-		}
+		var tValue int
+		fmt.Sscanf(sc.Text(), "  Test: divisible by %d", &tValue)
+		a.bigLimitSol2 *= tValue
 
-		// throw if true
 		sc.Scan()
-		var m1 int
-		_, err = fmt.Sscanf(sc.Text(), "    If true: throw to monkey %d", &m1)
-		if err != nil {
-			log.Fatal("Failed to read monkey on true")
-		}
+		var toThrowIfTrue int
+		fmt.Sscanf(sc.Text(), "    If true: throw to monkey %d", &toThrowIfTrue)
 
-		// monkey throw to if false or true
 		sc.Scan()
-		var m2 int
-		_, err = fmt.Sscanf(sc.Text(), "    If false: throw to monkey %d", &m2)
-		if err != nil {
-			log.Fatal("Failed to read monkey on false")
-		}
+		var toThrowIfFalse int
+		fmt.Sscanf(sc.Text(), "    If false: throw to monkey %d", &toThrowIfFalse)
+		m.throw = m.newThrow(tValue, toThrowIfTrue, toThrowIfFalse)
 
-		// store throw
-		m.toMonkey = append(m.toMonkey, m1, m2)
+		utl.Debug(debuglvl >= 10, "Monkey %d test value %d throw %d %d\n",
+			id, tValue, toThrowIfTrue, toThrowIfFalse)
 
 		// skip empty line
 		sc.Scan()
 
 		// Fine store new monkey in Aoc struct
-		a.monkeys = append(a.monkeys, m)
-
-		utl.Debug(debuglvl >= 10, "%s", m) // Debug show every monkey like input
+		a.monkeylist = append(a.monkeylist, m)
+		utl.Debug(debuglvl >= 10, "New monkey list %v\n", m)
+		id++
 	}
-	utl.Debug(debuglvl >= 5, "%s", a) // Summarize of monkey input
 }
 
-func (a *Aoc) sol1() (ret int) {
+func (a *aoc) sol1(filename string) (ret int) {
 	startmsg(utl.CurrFuncName())
-
-	// did we get it all and are monkey id same as index om monkeys?
-	// Yes we have it all and index of monkeys array and monkey id is the same we don't
-	// really need monkey id but whats the harm. That going to be a refactoring.
-	// for idx, monkey := range a.monkeys {
-	// 	fmt.Printf(" Monkey index %d has id %d\n", idx, monkey.monkeyId)
-	// }
+	a.parse(filename)
+	counts := make([]int, len(a.monkeylist))
 
 	// rounds 20
-	for a.round = 1; a.round <= 1; a.round++ {
-		for monkId, monkey := range a.monkeys {
+	for a.round = 1; a.round <= 20; a.round++ {
+		for mId, m := range a.monkeylist {
 
 			// update worry values add extra and dive by 3
-			for ItemId, itemv := range monkey.itemWValue {
-				var multiValue int
-				if monkey.operValue == "old" {
-					multiValue = itemv
-				} else {
-					var err error
-					multiValue, err = strconv.Atoi(monkey.operValue)
-					if err != nil {
-						log.Fatal("Failed to convert operValue in sol1 calculation")
-					}
-				}
+			for _, item := range m.items {
+				nV := m.op(item, false)
+				a.monkeylist[m.throw(nV)].items =
+					append(a.monkeylist[m.throw(nV)].items, nV)
+			}
+			counts[mId] += len(a.monkeylist[mId].items)
+			a.monkeylist[mId].items = []int{}
+		}
+		utl.Debug(debuglvl >= 5, "%#v\n", counts)
 
-				if monkey.operType == '+' {
-					a.monkeys[monkId].itemWValue[ItemId] += multiValue
-					a.monkeys[monkId].itemWValue[ItemId] = a.monkeys[monkId].itemWValue[ItemId] / 3
-				} else if monkey.operType == '*' {
-					a.monkeys[monkId].itemWValue[ItemId] *= multiValue
-					a.monkeys[monkId].itemWValue[ItemId] = a.monkeys[monkId].itemWValue[ItemId] / 3
-				} else {
-					log.Fatal("Failed to calculate item worry level")
-				}
-				// test worry value:167
-
-				temp := monkey.itemWValue
-				for iidx, itemv := range temp {
-					if itemv%monkey.testValue == 0 {
-						a.throwToMonkey(monkId, monkey.toMonkey[0], iidx)
-					} else {
-						a.throwToMonkey(monkId, monkey.toMonkey[1], iidx)
-					}
-
-				}
-
-				a.monkeys[monkId].itemWValue = []int{}
-
-				break
+		var highestCount, secondHighest int
+		for _, count := range counts {
+			if count > secondHighest {
+				secondHighest = count
+			}
+			if secondHighest > highestCount {
+				highestCount, secondHighest =
+					secondHighest, highestCount
 			}
 		}
+		ret = highestCount * secondHighest
 	}
-	fmt.Printf("%s", a)
-
 	return ret
 }
 
-func (a Aoc) throwToMonkey(fromMonkeyId, tomMonkeyId, itemId int) {
-	utl.Debug(debuglvl >= 10, "throwToMonkey %d %d %d\n", fromMonkeyId, tomMonkeyId, itemId)
-
-	// append to tom Monkey
-	a.monkeys[tomMonkeyId].itemWValue = append(a.monkeys[tomMonkeyId].itemWValue, a.monkeys[fromMonkeyId].itemWValue[itemId])
-}
-
-func (a *Aoc) sol2() (ret int) {
+func (a *aoc) sol2(filename string) (ret int) {
 	startmsg(utl.CurrFuncName())
+	a.parse(filename)
+	counts := make([]int, len(a.monkeylist))
+
+	// rounds 10_000
+	for a.round = 1; a.round <= 10_000; a.round++ {
+		for mId, m := range a.monkeylist {
+			// update worry values add extra and dive by 3
+			for _, item := range m.items {
+				nV := (m.op(item, true) % a.bigLimitSol2)
+
+				a.monkeylist[m.throw(nV)].items =
+					append(a.monkeylist[m.throw(nV)].items, nV)
+
+			}
+			counts[mId] += len(a.monkeylist[mId].items)
+			a.monkeylist[mId].items = []int{}
+		}
+		utl.Debug(debuglvl >= 5, "%#v\n", counts)
+	}
+
+	var highestCount, secondHighest int
+	for _, count := range counts {
+		if count > secondHighest {
+			secondHighest = count
+		}
+		if secondHighest > highestCount {
+			highestCount, secondHighest =
+				secondHighest, highestCount
+		}
+	}
+	utl.Debug(debuglvl >= 3, "Two moste active monkeys %d,%d\n", secondHighest, highestCount)
+	ret = highestCount * secondHighest
 	return ret
 }

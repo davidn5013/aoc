@@ -124,54 +124,35 @@ func part1(input string) int {
 	return cnt
 }
 
-// aa is true if contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
-func aa2(s string) bool {
-	for i := 0; i < len(s)-2; i++ {
-		needle := s[i : i+2]
-		if strings.Count(s[i+2:], needle) > 1 {
-			logger.Debug(fmt.Sprint("aa true on string:", s, " with ", needle))
-			return true
+func passesRule1(line string) bool {
+	for i := 0; i < len(line)-2; i++ {
+		// ** Remeberb 0:2 2 is exclusive so "abc"[0:2]="ab" not "ac"
+		toMatch := line[i : i+2]
+		for j := i + 2; j < len(line)-1; j++ {
+			if line[j:j+2] == toMatch {
+				return true
+			}
 		}
 	}
 	return false
 }
 
-func aa(s string) (hasTwo bool) {
-	for i := 0; i < len(s)-2; i++ {
-		needle := s[i : i+2]
-		before, after, _ := strings.Cut(s, needle)
-		if strings.Contains(before+"  "+after, needle) {
-			logger.Debug(fmt.Sprint("aa true on string:", s, " with ", needle))
-			hasTwo = true
-			break
-		}
-	}
-	return hasTwo
-}
-
-func xyx(s string) bool {
-	for i := 0; i < len(s)-3; i++ {
-		first, thread := string(s[i]), string(s[i+2])
-		if first == thread {
-			logger.Debug(fmt.Sprint("xyx true on string:", s, " with ", first+" "+thread))
+func passesRule2(line string) bool {
+	for i := 0; i < len(line)-2; i++ {
+		if line[i] == line[i+2] {
 			return true
 		}
 	}
 	return false
-}
-
-func nice2(s string) bool {
-	return xyx(s) && aa2(s)
 }
 
 func part2(input string) int {
-	parsed := parseInput(input)
-	cnt := 0
-	logger.Info("Running Part 2")
-	for _, line := range parsed {
-		if nice2(line) {
-			cnt++
+	nice := 0
+	for _, line := range strings.Split(input, "\n") {
+		if passesRule1(line) && passesRule2(line) {
+			nice++
 		}
 	}
-	return cnt
+
+	return nice
 }

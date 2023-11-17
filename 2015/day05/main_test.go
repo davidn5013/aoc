@@ -128,12 +128,12 @@ func Test_part2(t *testing.T) {
 		want  int
 	}{
 		{
-			name:  "three vowels",
+			name:  "pair that appears twice",
 			input: "qjhvhtzxzqqjkmpb",
 			want:  1,
 		},
 		{
-			name:  "secound nice",
+			name:  "short twice",
 			input: "xxyxx",
 			want:  1,
 		},
@@ -147,11 +147,11 @@ func Test_part2(t *testing.T) {
 			input: "ieodomkazucvgmuy",
 			want:  0,
 		},
-		// {
-		// 	name:  "actual",
-		// 	input: input,
-		// 	want:  0,
-		// },
+		{
+			name:  "actual",
+			input: input,
+			want:  51,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -6,9 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"golang.org/x/net/html"
-
 	"github.com/alexchao26/advent-of-code-go/util"
+	"golang.org/x/net/html"
 )
 
 func GetPrompt(day, year int, cookie string) {

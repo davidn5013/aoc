@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/alexchao26/advent-of-code-go/algos"
+	"github.com/davidn5013/aoc/algos"
 )
 
 func TestSplitStringOn(t *testing.T) {

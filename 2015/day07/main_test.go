@@ -4,42 +4,34 @@ import (
 	"testing"
 )
 
-var example = ``
+var example string = `123 -> a
+456 -> b
+a AND b -> d
+a OR b -> e
+a LSHIFT 2 -> f
+y RSHIFT 2 -> g
+NOT a -> h
+NOT b -> i`
 
-func Test_part1(t *testing.T) {
+func Test_someAssemblyRequired(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
-		want  string
+		want  int
 	}{
 		{
-			name: "example",
-			input: `123 -> x
-456 -> y
-x AND y -> d
-x OR y -> e
-x LSHIFT 2 -> f
-y RSHIFT 2 -> g
-NOT x -> h
-NOT y -> i`,
-			want: `d: 72
-e: 507
-f: 492
-g: 114
-h: 65412
-i: 65079
-x: 123
-y: 456`,
+			name:  "example",
+			input: example,
+			want:  0,
 		},
-		// {
 		// 	name:  "actual",
-		// 	input: input,
-		// 	want:  0,
+		// 	input: util.ReadFile("input.txt"),
+		// 	want:  3376,
 		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := part1(tt.input); got != tt.want {
+			if got := someAssemblyRequired(tt.input, 1); got != tt.want {
 				t.Errorf("part1() = %v, want %v", got, tt.want)
 			}
 		})
@@ -59,13 +51,13 @@ func Test_part2(t *testing.T) {
 		},
 		// {
 		// 	name:  "actual",
-		// 	input: input,
+		// 	input: util.ReadFile("input.txt"),
 		// 	want:  0,
 		// },
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := part2(tt.input); got != tt.want {
+			if got := someAssemblyRequired(tt.input, 2); got != tt.want {
 				t.Errorf("part2() = %v, want %v", got, tt.want)
 			}
 		})

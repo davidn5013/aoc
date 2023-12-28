@@ -4,7 +4,13 @@
 .arkiv
 .arkiv/**
 *läsmig*
-**/**/Session.vim
+*/*/Session.vim
 2022/aoc_template_*.zip
-**/**/input.txt
-**/**/input_test.txt
+*/*/input.txt
+*/*/*input.txt
+*/*/input_test.txt
+*/*/example.txt
+.history
+*/*/*.xlsx
+2023/day06/README.txt
+.gitignore

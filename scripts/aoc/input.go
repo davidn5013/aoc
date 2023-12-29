@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alexchao26/advent-of-code-go/util"
+	"github.com/davidn5013/aoc/util"
 )
 
 func GetInput(day, year int, cookie string) {
@@ -20,7 +20,8 @@ func GetInput(day, year int, cookie string) {
 	}
 
 	// write to file
-	filename := filepath.Join(util.Dirname(), "../..", fmt.Sprintf("%d/day%02d/input.txt", year, day))
+	// filename := filepath.Join(util.Dirname(), "../..", fmt.Sprintf("%d/day%02d/input.txt", year, day))
+	filename := filepath.Join(util.Dirname(), "../../input", fmt.Sprintf("%dday%02dinput.txt", year, day))
 	WriteToFile(filename, body)
 
 	fmt.Println("Wrote to file: ", filename)

@@ -58,7 +58,10 @@ func part1(input string) int {
 		fmt.Println(card.card, len(cardcnt(card.card, 0)), cardtype(card.card))
 	}
 
-	fmt.Println(cards[0].card, cards[1].card, firstCardBig(cards[0].card, cards[1].card))
+	c1 := cards[0].card
+	c2 := cards[1].card
+
+	fmt.Println(c1, c2, firstHandBig(c1, c2))
 	return 0
 }
 
@@ -80,29 +83,52 @@ func cardtype(card string) string {
 	return "High card"
 }
 
-func firstCardBig(card1, card2 string) bool {
-	cardval := []string{" ", "A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"}
+func cardval(card string) int {
+	cardval := map[string]int{
+		"A": 14,
+		"K": 13,
+		"Q": 12,
+		"J": 11,
+		"T": 10,
+		"9": 9,
+		"8": 8,
+		"7": 8,
+		"6": 6,
+		"5": 5,
+		"4": 4,
+		"3": 3,
+		"2": 2,
+	}
+	return cardval[string(card)]
+}
+
+func firstHandBig(card1, card2 string) bool {
 
 	if len(card1) != len(card2) {
-		log.Fatal("ERR differen size of cards ", len(card1), len(card2))
+		log.Fatal("ERR different size of cards ", len(card1), len(card2))
 	}
 
-	var f, s int
-	for i := 0; i < len(card1); i++ {
-		for j := 0; j < len(cardval); j++ {
-			if string(card1[i]) == cardval[j] {
-				f = j
-			}
-			if string(card2[i]) == cardval[j] {
-				s = j
-			}
+	fmt.Println(card1, card2)
+	for i, v := range card1 {
 
+		c1 := string(v)
+		c2 := string(card2[i])
+		v1 := cardval(c1)
+		v2 := cardval(c2)
+
+		if v1 == v2 {
+			continue
 		}
-		if f < s {
-			fmt.Println(string(card1[i]), string(card2[i]), f, s)
+
+		if v1 > v2 {
+			fmt.Println(c1, c2, v1, v2)
 			return true
+		} else {
+			break
 		}
+
 	}
+
 	return false
 }
 

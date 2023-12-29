@@ -122,7 +122,9 @@ type GearPos struct {
 	colStart int
 	colEnd   int
 }
+
 type GearValue int
+
 type Gears map[GearPos]GearValue
 
 func (g Gears) setGear(row, colStart, colEnd, value int) {
@@ -237,9 +239,9 @@ func part2(input string) int {
 
 	}
 
-	// for i, v := range g {
-	// 	fmt.Println(i.row+1, i.colStart+1, i.colEnd+1, v)
-	// }
+	for i, v := range g {
+		fmt.Println(i.row+1, i.colStart+1, i.colEnd+1, v)
+	}
 
 	return g.sumgears(parsed)
 }

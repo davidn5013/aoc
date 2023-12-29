@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alexchao26/advent-of-code-go/util"
+	"github.com/davidn5013/aoc/util"
 	"golang.org/x/net/html"
 )
 

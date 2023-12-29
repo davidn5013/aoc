@@ -14,3 +14,6 @@
 */*/*.xlsx
 2023/day06/README.txt
 .gitignore
+2023/day03/working/main.go
+set_aoc_cookie.cmd
+input/*

@@ -8,7 +8,6 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"io"
 	"io/fs"
 	"log"
 	"os"
@@ -37,17 +36,19 @@ func flags() (f flagType) {
 const inputfilename = "input.txt"
 const inputpath = "input"
 
+// Execute is the main for running aoc
 func Execute() {
 	f := flags()
 
 	for _, v := range sols {
 		if v.year == f.Year && v.day == f.Day {
 			RunAoc(f.Year, f.Day, inputfilename, f.Cookie)
-			os.Exit(1)
+			os.Exit(1) // Not exit here
 		}
 	}
 
-	inpfile(f.Year, f.Day, inputfilename, f.Cookie)
+	// no solution in sol catalog run standalone
+	inputfileCreate(f.Year, f.Day, inputfilename, f.Cookie)
 	// printMainSolutions(".")
 
 	a := createAocInputPath(f.Year, f.Day, "main.go")
@@ -59,6 +60,8 @@ func Execute() {
 
 }
 
+// TODO no nead for this function
+// printMainSolutions list aoc solution that standalone main files
 func printMainSolutions(path string) {
 	fileSystem := os.DirFS(path)
 
@@ -74,42 +77,34 @@ func printMainSolutions(path string) {
 
 }
 
-func inpfile(year, day, filename, cookie string) {
-	inp := createAocInputPath(year, day, filename)
-	fmt.Println(inp)
-	if !util.FileExists(inp) {
-		fmt.Println("Missing", filename, "file")
-		if cookie != "" {
+// TODO move check for input catalog so aoc sol catalog can check for input
+
+// inputfileCreate get inputfiles for stand alone aoc solutions, download and copy if missing
+func inputfileCreate(year, day, filename, cookie string) {
+	inpInFold := createAocInputPath(year, day, filename)
+	if !util.FileExists(inpInFold) {
+
+		src := inputPath(year, day, inputpath, inputfilename)
+		dst := createAocInputPath(year, day, inputfilename)
+
+		if !util.FileExists(src) && cookie != "" {
 			aoc.GetInput(cast.ToInt(day), cast.ToInt(year), cookie)
+		} else {
+			log.Fatal("ERR Missing aoc cookie")
+		}
 
-			sourcename := inputfile(year, day, inputpath, filename)
-			srcFile, err := os.Open(sourcename)
+		if !util.FileExists(dst) {
+			err := util.FileCopy(src, dst)
 			if err != nil {
-				log.Fatal("Cant open input file for copy", err)
-			}
-			defer srcFile.Close()
-
-			destname := createAocInputPath(year, day, filename)
-			destFile, err := os.Create(destname) // creates if file doesn't exist
-			if err != nil {
-				log.Fatal("ERR Opening destination file", err)
-			}
-			defer destFile.Close()
-
-			_, err = io.Copy(destFile, srcFile) // check first var for number of bytes copied
-			if err != nil {
-				log.Fatal("ERR Coping file", err)
-			}
-
-			err = destFile.Sync()
-			if err != nil {
-				log.Fatal("ERR Sync files", err)
+				log.Fatal(err)
 			}
 		}
+
 	}
 
 }
 
+// createAocInputPath return path and file for standalone aoc solutions
 func createAocInputPath(year, day, filename string) string {
 	d := "0" + day
 	return filepath.Join(year, "day"+d[len(d)-2:], filename)

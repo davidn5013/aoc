@@ -2,6 +2,8 @@ package util
 
 import (
 	"errors"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -46,4 +48,32 @@ func Dirname() string {
 func FileExists(path string) bool {
 	_, err := os.Stat(path)
 	return !errors.Is(err, os.ErrNotExist)
+}
+
+// FileCopy copies one file
+func FileCopy(sourcename, destinationname string) error {
+	srcFile, err := os.Open(sourcename)
+	if err != nil {
+		return fmt.Errorf("ERR Missing input files %s ", err)
+	}
+	defer srcFile.Close()
+
+	destFile, err := os.Create(destinationname) // creates if file doesn't exist
+	if err != nil {
+		return fmt.Errorf("ERR cant opening destination file %s ", err)
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, srcFile) // check first var for number of bytes copied
+	if err != nil {
+		return fmt.Errorf("ERR copying file %s ", err)
+	}
+
+	err = destFile.Sync()
+	if err != nil {
+		return fmt.Errorf("ERR ending copying file %s ", err)
+	}
+
+	return nil
+
 }

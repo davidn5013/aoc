@@ -18,10 +18,10 @@ func Part2(input string) int {
 func previewInput(input string) {
 	inputlines := strings.Split(input, "\n")
 	fmt.Println("Numbers of lines:", len(inputlines))
-	fmt.Println("First 10 lines")
+	fmt.Println("First 5 lines or less:")
 	for i, v := range inputlines {
 		fmt.Println(v)
-		if i > 4 {
+		if i > 3 {
 			break
 		}
 	}

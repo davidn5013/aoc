@@ -32,8 +32,11 @@ type sol struct {
 
 type solutions []sol
 
+// TODO clean up check for input in multi places
+
+// RunAoc execute aoc solutions in sol catalog
 func RunAoc(year, day, filename, cookie string) {
-	inputfile := inputfile(year, day, "input", filename)
+	inputfile := inputPath(year, day, inputpath, filename)
 
 	if !util.FileExists(inputfile) {
 		if cookie != "" {
@@ -53,7 +56,8 @@ func RunAoc(year, day, filename, cookie string) {
 
 }
 
-func inputfile(year, day, catalog, filename string) string {
+// inputPath get the path from input files in the shared input catalog
+func inputPath(year, day, catalog, filename string) string {
 	d := "0" + day
 	f := year + "day" + d[len(d)-2:] + filename
 	return filepath.Join(catalog, f)

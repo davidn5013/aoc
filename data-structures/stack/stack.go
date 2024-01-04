@@ -4,7 +4,7 @@
 */
 
 // Stack made of array of rune
-package utl
+package util
 
 type Stack struct {
 	elements []rune

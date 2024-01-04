@@ -1,4 +1,4 @@
-package utl
+package util
 
 import (
 	"fmt"
@@ -8,13 +8,6 @@ import (
 )
 
 // Helper functions
-
-// Debug is fmt.Printf false or true
-func Debug(b bool, format string, v ...any) {
-	if b {
-		fmt.Printf("DEBUG : "+format, v...)
-	}
-}
 
 // PanicIf short for if b {panic()} don't for get to change the func name to most
 func PanicIf(b bool, format string, v ...any) {

@@ -1,7 +1,9 @@
 package util
 
 import (
+	"errors"
 	"io/ioutil"
+	"os"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -39,4 +41,9 @@ func Dirname() string {
 		panic("getting calling function")
 	}
 	return filepath.Dir(filename)
+}
+
+func FileExists(path string) bool {
+	_, err := os.Stat(path)
+	return !errors.Is(err, os.ErrNotExist)
 }

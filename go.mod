@@ -3,7 +3,6 @@ module github.com/davidn5013/aoc
 go 1.21
 
 require (
-	github.com/alexchao26/advent-of-code-go v0.0.0-20221230165838-615f16cc156a
 	golang.org/x/net v0.18.0
 )
 

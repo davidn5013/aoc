@@ -36,6 +36,28 @@ func ReadFile(pathFromCaller string) string {
 	return strings.TrimRight(strContent, "\n")
 }
 
+// ShardInputFile read shared (input files in input catalog) and return as a string
+func ShardInputFile(inputpath string) string {
+	b, err := os.ReadFile(inputpath)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
+
+// PathInputShared get the path from input files in the shared input catalog
+func PathInputShared(year, day, catalog, filename string) string {
+	d := "0" + day
+	f := year + "day" + d[len(d)-2:] + filename
+	return filepath.Join(catalog, f)
+}
+
+// PathInputStandalone return filepath for inputfiles used by standalone aoc solutions (solution with main package)
+func PathInputStandalone(year, day, filename string) string {
+	d := "0" + day
+	return filepath.Join(year, "day"+d[len(d)-2:], filename)
+}
+
 // Dirname is a port of __dirname in node
 func Dirname() string {
 	_, filename, _, ok := runtime.Caller(1)
@@ -45,6 +67,7 @@ func Dirname() string {
 	return filepath.Dir(filename)
 }
 
+// FileExists check if a file exists
 func FileExists(path string) bool {
 	_, err := os.Stat(path)
 	return !errors.Is(err, os.ErrNotExist)
@@ -76,4 +99,23 @@ func FileCopy(sourcename, destinationname string) error {
 
 	return nil
 
+}
+
+// PreviewInput a long input string
+func PreviewInput(input string, lines int) string {
+	inputlines := strings.Split(input, "\n")
+	var s strings.Builder
+	l := len(inputlines)
+	outlines := lines
+	if lines > l {
+		outlines = l
+	}
+	s.WriteString(fmt.Sprintln("First", outlines, "lines of total", l))
+	for i, v := range inputlines {
+		if i >= lines {
+			break
+		}
+		s.WriteString(v + "\n")
+	}
+	return s.String()
 }

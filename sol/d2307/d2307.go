@@ -2,27 +2,14 @@
 package d2307
 
 import (
-	"fmt"
-	"strings"
+	"github.com/davidn5013/aoc/sol/d2307/part1"
+	"github.com/davidn5013/aoc/sol/d2307/part2"
 )
 
 func Part1(input string) int {
-	previewInput(input)
-	return 0
+	return part1.Solve(input)
 }
 
 func Part2(input string) int {
-	return 0
-}
-
-func previewInput(input string) {
-	inputlines := strings.Split(input, "\n")
-	fmt.Println("Numbers of lines:", len(inputlines))
-	fmt.Println("First 5 lines or less:")
-	for i, v := range inputlines {
-		fmt.Println(v)
-		if i > 3 {
-			break
-		}
-	}
+	return part2.Solve(input)
 }

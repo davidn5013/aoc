@@ -1,15 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"path/filepath"
-
-	"github.com/davidn5013/aoc/cast"
-	"github.com/davidn5013/aoc/scripts/aoc"
 	"github.com/davidn5013/aoc/sol/d2307"
-	"github.com/davidn5013/aoc/util"
+	"github.com/davidn5013/aoc/sol/d2308"
+	"github.com/davidn5013/aoc/sol/d2309"
 )
 
 // new solutios in sol catalog using modules instead of main files
@@ -21,6 +15,18 @@ var sols = solutions{
 		part1: d2307.Part1,
 		part2: d2307.Part2,
 	},
+	sol{
+		year:  "2023",
+		day:   "8",
+		part1: d2308.Part1,
+		part2: d2308.Part2,
+	},
+	sol{
+		year:  "2023",
+		day:   "9",
+		part1: d2309.Part1,
+		part2: d2309.Part2,
+	},
 }
 
 type sol struct {
@@ -31,34 +37,3 @@ type sol struct {
 }
 
 type solutions []sol
-
-// TODO clean up check for input in multi places
-
-// RunAoc execute aoc solutions in sol catalog
-func RunAoc(year, day, filename, cookie string) {
-	inputfile := inputPath(year, day, inputpath, filename)
-
-	if !util.FileExists(inputfile) {
-		if cookie != "" {
-			aoc.GetInput(cast.ToInt(day), cast.ToInt(year), cookie)
-		} else {
-			log.Fatal("Need aoc cookie for download of missing inputfile")
-		}
-	}
-
-	for _, s := range sols {
-		if s.year == year && s.day == day {
-			buf, _ := os.ReadFile(inputfile)
-			input := string(buf)
-			fmt.Printf("Part1: %d\nPart2: %d\n", s.part1(input), s.part2(input))
-		}
-	}
-
-}
-
-// inputPath get the path from input files in the shared input catalog
-func inputPath(year, day, catalog, filename string) string {
-	d := "0" + day
-	f := year + "day" + d[len(d)-2:] + filename
-	return filepath.Join(catalog, f)
-}

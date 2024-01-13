@@ -1,8 +1,6 @@
 // Package cmd runnes aoc solutions
 package cmd
 
-// TODO: Run advent of code solution part 1 & 2
-// TODO: Download input for solutions
 // TODO: Create template for new solution
 
 import (
@@ -11,7 +9,6 @@ import (
 	"io/fs"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/davidn5013/aoc/cast"
@@ -20,16 +17,19 @@ import (
 )
 
 type flagType struct {
-	Year   string
-	Day    string
-	Cookie string
+	Year     string
+	Day      string
+	Cookie   string
+	DebugLvl int
 }
 
 func flags() (f flagType) {
 	flag.StringVar(&f.Year, "year", "2023", "AOC Year")
 	flag.StringVar(&f.Day, "day", "7", "AOC Day")
 	flag.StringVar(&f.Cookie, "cookie", os.Getenv("AOC_SESSION_COOKIE"), "AOC session cookie")
+	flag.IntVar(&f.DebugLvl, "debuglvl", 0, "Set debug level 0=none, 5=info, 10=info&debug")
 	flag.Parse()
+	util.SetDebuglvl(f.DebugLvl)
 	return f
 }
 
@@ -43,19 +43,40 @@ func Execute() {
 	for _, v := range sols {
 		if v.year == f.Year && v.day == f.Day {
 			RunAoc(f.Year, f.Day, inputfilename, f.Cookie)
-			os.Exit(1) // Not exit here
+			os.Exit(0) // Note exit here
 		}
 	}
 
 	// no solution in sol catalog run standalone
-	inputfileCreate(f.Year, f.Day, inputfilename, f.Cookie)
+	GetCreateStandAloneInput(f.Year, f.Day, inputfilename, f.Cookie)
 	// printMainSolutions(".")
 
-	a := createAocInputPath(f.Year, f.Day, "main.go")
-	if util.FileExists(a) {
-		util.Run("go", "run", a)
+	input := util.PathInputStandalone(f.Year, f.Day, "main.go")
+	if util.FileExists(input) {
+		util.Run("go", "run", input)
 	} else {
-		fmt.Println(a, "does not exists")
+		fmt.Println(input, "does not exists")
+	}
+
+}
+
+// RunAoc execute aoc solutions in sol catalog
+func RunAoc(year, day, filename, cookie string) {
+	inputfile := util.PathInputShared(year, day, inputpath, filename)
+
+	if !util.FileExists(inputfile) {
+		if cookie != "" {
+			aoc.GetInput(cast.ToInt(day), cast.ToInt(year), cookie)
+		} else {
+			log.Fatal("Need aoc cookie for download of missing inputfile")
+		}
+	}
+
+	for _, s := range sols {
+		if s.year == year && s.day == day {
+			input := util.ShardInputFile(inputfile)
+			fmt.Printf("Part1: %d\nPart2: %d\n", s.part1(input), s.part2(input))
+		}
 	}
 
 }
@@ -79,13 +100,13 @@ func printMainSolutions(path string) {
 
 // TODO move check for input catalog so aoc sol catalog can check for input
 
-// inputfileCreate get inputfiles for stand alone aoc solutions, download and copy if missing
-func inputfileCreate(year, day, filename, cookie string) {
-	inpInFold := createAocInputPath(year, day, filename)
+// GetCreateStandAloneInput get inputfiles for stand alone aoc solutions (solution with main package), download and copy if missing
+func GetCreateStandAloneInput(year, day, filename, cookie string) {
+	inpInFold := util.PathInputStandalone(year, day, filename)
 	if !util.FileExists(inpInFold) {
 
-		src := inputPath(year, day, inputpath, inputfilename)
-		dst := createAocInputPath(year, day, inputfilename)
+		src := util.PathInputShared(year, day, inputpath, inputfilename)
+		dst := util.PathInputStandalone(year, day, inputfilename)
 
 		if !util.FileExists(src) && cookie != "" {
 			aoc.GetInput(cast.ToInt(day), cast.ToInt(year), cookie)
@@ -102,10 +123,4 @@ func inputfileCreate(year, day, filename, cookie string) {
 
 	}
 
-}
-
-// createAocInputPath return path and file for standalone aoc solutions
-func createAocInputPath(year, day, filename string) string {
-	d := "0" + day
-	return filepath.Join(year, "day"+d[len(d)-2:], filename)
 }

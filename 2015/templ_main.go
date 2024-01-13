@@ -7,8 +7,9 @@ import (
 	"strings"
 )
 
-//go:embed inp.txt
 // go:embed input.txt
+//
+//go:embed inp.txt
 var input string
 
 // INFO print all [INFO] lines

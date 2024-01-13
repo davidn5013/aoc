@@ -71,7 +71,7 @@ var (
 	}
 )
 
-type matrix [][]int
+type mat [][]int
 
 type cursor struct {
 	row    int
@@ -79,14 +79,14 @@ type cursor struct {
 }
 
 // New create a new empty Matrix used for Moves
-func New() *matrix {
-	m := matrix{}
+func New() *mat {
+	m := mat{}
 	return &m
 }
 
 // NewWithSize create a new Matrix used for Moves
-func NewWithSize(rows, columns int) matrix {
-	var res matrix
+func NewWithSize(rows, columns int) mat {
+	var res mat
 	for i := 0; i < rows; i++ {
 		var j []int
 		for i := 0; i < columns; i++ {
@@ -99,7 +99,7 @@ func NewWithSize(rows, columns int) matrix {
 
 // ExpandMatrix grow empty matrix
 // to shrink make new and copy
-func (m matrix) ExpandMatrixSize(rows, columns int) {
+func (m mat) ExpandMatrixSize(rows, columns int) {
 	for i := 0; i < rows; i++ {
 		var j []int
 		for i := 0; i < columns; i++ {
@@ -110,7 +110,7 @@ func (m matrix) ExpandMatrixSize(rows, columns int) {
 }
 
 // SetValueInPos takes a position and value and place in matrix
-func (m matrix) SetValueInPos(p Pos, value int) bool {
+func (m mat) SetValueInPos(p Pos, value int) bool {
 	if p.Row >= len(m) || p.Row < 0 {
 		return false
 	}
@@ -122,7 +122,7 @@ func (m matrix) SetValueInPos(p Pos, value int) bool {
 }
 
 // GetValueInPos get the value for a position
-func (m matrix) GetValueInPos(p Pos, value int) (int, bool) {
+func (m mat) GetValueInPos(p Pos, value int) (int, bool) {
 	if p.Row >= len(m) || p.Row < 0 {
 		return 0, false
 	}
@@ -133,7 +133,7 @@ func (m matrix) GetValueInPos(p Pos, value int) (int, bool) {
 }
 
 // NewCursor create a new cursor for moves
-func (m matrix) NewCursor(p Pos) (cur *cursor, err error) {
+func (m mat) NewCursor(p Pos) (cur *cursor, err error) {
 	r, c := p.Row, p.Column
 	if (r >= 0 && r <= len(m)) && (c >= 0 && c < len(m[1])) {
 		cur := cursor{
@@ -146,17 +146,17 @@ func (m matrix) NewCursor(p Pos) (cur *cursor, err error) {
 }
 
 // GetValueUnderCursor int
-func (m matrix) GetValueUnderCursor(cur cursor) int {
+func (m mat) GetValueUnderCursor(cur cursor) int {
 	return m[cur.row][cur.column]
 }
 
 // SetValueUnderCursor int
-func (m matrix) SetValueUnderCursor(cur cursor, value int) {
+func (m mat) SetValueUnderCursor(cur cursor, value int) {
 	m[cur.row][cur.column] = value
 }
 
 // CursorPosChange
-func (m matrix) CursorPosChange(cur *cursor, p Pos) error {
+func (m mat) CursorPosChange(cur *cursor, p Pos) error {
 	newRow := cur.row + p.Row
 	newColumn := cur.column + p.Column
 	if (newRow >= 0 && newRow < len(m)) && (newColumn >= 0 && newColumn < len(m[1])) {
@@ -167,7 +167,7 @@ func (m matrix) CursorPosChange(cur *cursor, p Pos) error {
 }
 
 // DoMovesSetValue follow moves in []Move and set one value
-func (m matrix) DoMovesSetValue(cur *cursor, moves []Move, value int) error {
+func (m mat) DoMovesSetValue(cur *cursor, moves []Move, value int) error {
 	for _, move := range moves {
 		if err := m.CursorPosChange(cur, Pos(move)); err != nil {
 			return err
@@ -178,7 +178,7 @@ func (m matrix) DoMovesSetValue(cur *cursor, moves []Move, value int) error {
 }
 
 // DoMoveGetValue follow moves in []Move and get all values
-func (m matrix) DoMovesGetValue(cur *cursor, moves []Move) (ret []int, err error) {
+func (m mat) DoMovesGetValue(cur *cursor, moves []Move) (ret []int, err error) {
 	for _, move := range moves {
 		if err := m.CursorPosChange(cur, Pos(move)); err != nil {
 			return ret, err
@@ -189,7 +189,7 @@ func (m matrix) DoMovesGetValue(cur *cursor, moves []Move) (ret []int, err error
 }
 
 // Worm follow moves in []Move and return []int of x head moves. Reveres []int
-func (m matrix) WormGetValue(cur *cursor, moves []Move, wormlength int) (ret []int, err error) {
+func (m mat) WormGetValue(cur *cursor, moves []Move, wormlength int) (ret []int, err error) {
 	rev, err := m.DoMovesGetValue(cur, moves)
 	ret = reverseArr(rev)
 
@@ -213,7 +213,7 @@ func reverseArr(a []int) []int {
 	return a
 }
 
-func (m matrix) Transpose() (res matrix) {
+func (m mat) Transpose() (res mat) {
 	for row := range m {
 		line := []int{}
 		for col := range m {
@@ -224,7 +224,7 @@ func (m matrix) Transpose() (res matrix) {
 	return res
 }
 
-func (m matrix) Reverse() (res matrix) {
+func (m mat) Reverse() (res mat) {
 	for row, rowvalue := range m {
 		line := []int{}
 		for i := len(rowvalue) - 1; i >= 0; i-- {
@@ -236,7 +236,7 @@ func (m matrix) Reverse() (res matrix) {
 }
 
 // Stringer for matrix, fmt.Println
-func (m matrix) String() string {
+func (m mat) String() string {
 	res := ""
 	for _, v := range m {
 		for _, i := range v {
@@ -248,7 +248,7 @@ func (m matrix) String() string {
 }
 
 // GoString for matrix, fmt.Printf("%#v\n",matrix)
-func (m matrix) GoString() string {
+func (m mat) GoString() string {
 	res := fmt.Sprintf("{\n")
 	for _, v := range m {
 		for _, i := range v {

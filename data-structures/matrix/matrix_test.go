@@ -5,15 +5,13 @@ import (
 	"os"
 	"strings"
 	"testing"
-
-	"github.com/davidn5013/aoc/matrix"
 )
 
 // Create 3x3 matrix set middel value
 // set value in u
 // read middel row
 func TestNew(t *testing.T) {
-	m := matrix.NewWithSize(3, 3)
+	m := NewWithSize(3, 3)
 	m.SetValueInPos(matrix.Pos{1, 1}, 1)
 	output := strings.TrimSpace(fmt.Sprintln(m))
 

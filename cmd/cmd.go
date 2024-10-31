@@ -64,13 +64,7 @@ func Execute() {
 func RunAoc(year, day, filename, cookie string) {
 	inputfile := util.PathInputShared(year, day, inputpath, filename)
 
-	if !util.FileExists(inputfile) {
-		if cookie != "" {
-			aoc.GetInput(cast.ToInt(day), cast.ToInt(year), cookie)
-		} else {
-			log.Fatal("Need aoc cookie for download of missing inputfile")
-		}
-	}
+	chkCookie(inputfile, cookie, day, year)
 
 	for _, s := range sols {
 		if s.year == year && s.day == day {
@@ -79,6 +73,16 @@ func RunAoc(year, day, filename, cookie string) {
 		}
 	}
 
+}
+
+func chkCookie(inputfile string, cookie string, day string, year string) {
+	if !util.FileExists(inputfile) {
+		if cookie != "" {
+			aoc.GetInput(cast.ToInt(day), cast.ToInt(year), cookie)
+		} else {
+			log.Fatal("Need aoc cookie for download of missing inputfile")
+		}
+	}
 }
 
 // TODO no nead for this function

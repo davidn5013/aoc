@@ -1,14 +1,21 @@
-package d2307
+package d2310
 
 import (
 	"testing"
+
+	"github.com/davidn5013/aoc/util"
 )
 
-var example = ``
+var example = `.....
+.S-7.
+.|.|.
+.L-J.
+.....`
 
-// var input = util.ShardInputFile(util.PathInputShared("20YY", "D", "../../input", "input.txt"))
+var input = util.ShardInputFile(util.PathInputShared("2023", "10", "../../input", "input.txt"))
 
 func Test_Part1(t *testing.T) {
+	util.SetDebuglvl(10)
 	tests := []struct {
 		name  string
 		input string
@@ -17,7 +24,7 @@ func Test_Part1(t *testing.T) {
 		{
 			name:  "example",
 			input: example,
-			want:  0,
+			want:  5,
 		},
 		// {
 		// 	name:  "actual",

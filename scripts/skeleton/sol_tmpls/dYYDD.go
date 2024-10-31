@@ -1,5 +1,5 @@
-// Package d2307 - Solution of Advent of code 2023 day 7 part 1 & part 2
-package d2307
+// Package dYYDD - Solution of Advent of code 20YY day D part 1 & part 2
+package dYYDD
 
 import (
 	"fmt"

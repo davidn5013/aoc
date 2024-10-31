@@ -4,6 +4,7 @@ import (
 	"github.com/davidn5013/aoc/sol/d2307"
 	"github.com/davidn5013/aoc/sol/d2308"
 	"github.com/davidn5013/aoc/sol/d2309"
+	"github.com/davidn5013/aoc/sol/d2310"
 )
 
 // new solutios in sol catalog using modules instead of main files
@@ -26,6 +27,12 @@ var sols = solutions{
 		day:   "9",
 		part1: d2309.Part1,
 		part2: d2309.Part2,
+	},
+	sol{
+		year:  "2023",
+		day:   "10",
+		part1: d2310.Part1,
+		part2: d2310.Part2,
 	},
 }
 
